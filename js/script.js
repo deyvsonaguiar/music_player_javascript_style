@@ -6,6 +6,8 @@ musicName = wrapper.querySelector('.song-details .name'),
 musicArtist = wrapper.querySelector('.song-details .artist'),
 mainAudio = wrapper.querySelector('#main-audio'),
 playPauseBtn = wrapper.querySelector('.play-pause');
+prevBtn = wrapper.querySelector('#prev');
+nextBtn = wrapper.querySelector('#next');
 
 let musicIndex = 3;
 
@@ -34,8 +36,35 @@ function pauseMusic() {
     mainAudio.pause();
 }
 
+//next music
+function nextMusic() {
+    musicIndex++;
+    musicIndex > allMusic.length ? musicIndex = 1 : musicIndex = musicIndex;
+    loadMusic(musicIndex);
+    playMusic();
+}
+
+//prev music
+function prevMusic() {
+    musicIndex--;
+    musicIndex < 1 ? musicIndex = allMusic.length : musicIndex = musicIndex;
+    loadMusic(musicIndex);
+    playMusic();
+}
+
+//acionando botão de play e pause
 playPauseBtn.addEventListener("click", () => {
     const isMusicPaused = wrapper.classList.contains("paused");
     isMusicPaused ? pauseMusic() : playMusic();
-
 });
+
+//acionando botão next
+nextBtn.addEventListener("click", () => {
+    nextMusic();
+});
+
+//acionando botão prev
+prevBtn.addEventListener("click", () => {
+    prevMusic();
+});
+
