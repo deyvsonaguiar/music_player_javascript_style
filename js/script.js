@@ -5,9 +5,10 @@ musicImg = wrapper.querySelector('.img-area img'),
 musicName = wrapper.querySelector('.song-details .name'),
 musicArtist = wrapper.querySelector('.song-details .artist'),
 mainAudio = wrapper.querySelector('#main-audio'),
-playPauseBtn = wrapper.querySelector('.play-pause');
-prevBtn = wrapper.querySelector('#prev');
-nextBtn = wrapper.querySelector('#next');
+playPauseBtn = wrapper.querySelector('.play-pause'),
+prevBtn = wrapper.querySelector('#prev'),
+nextBtn = wrapper.querySelector('#next'),
+progressArea = wrapper.querySelector('.progress-area'),
 progressBar = wrapper.querySelector('.progress-bar');
 
 let musicIndex = 3;
@@ -101,3 +102,12 @@ mainAudio.addEventListener("timeupdate", (e) => {
     
 });
 
+//atualizando barra de progress-bar de acordo com o tamanho
+progressArea.addEventListener("click", (e) => {
+    let progressWidthVal = progressArea.clientWidth; //acessando elemento width do progress bar
+    let clickedOffSetX = e.offsetX; //acessando value offset
+    let songDuration = mainAudio.duration; //acessando a duração total da música
+
+    mainAudio.currentTime = (clickedOffSetX / progressWidthVal) * songDuration;
+    playMusic();
+});
