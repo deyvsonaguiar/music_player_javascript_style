@@ -111,3 +111,54 @@ progressArea.addEventListener("click", (e) => {
     mainAudio.currentTime = (clickedOffSetX / progressWidthVal) * songDuration;
     playMusic();
 });
+
+//atualizando botão repetir
+const repeatBtn = wrapper.querySelector("#repeat-plist");
+
+repeatBtn.addEventListener("click", () => {
+    //pegamos o innerText do ícone que será alterado
+    let getText = repeatBtn.innerText;
+    //diferenciando o ícone
+    switch(getText) {
+        case "repeat":
+        repeatBtn.innerText = "repeat_one";
+        repeatBtn.setAttribute("title", "Song looped");
+        break;
+        case "repeat_one":
+        repeatBtn.innerText = "shuffle";
+        repeatBtn.setAttribute("title", "Playback shuffle");
+        break;
+        case "shuffle":
+        repeatBtn.innerText = "repeat";
+        repeatBtn.setAttribute("title", "Playlist looped");
+        break;
+    }
+
+});
+
+//funcionamento dos ícones repeat, repeat_one e shuffle
+mainAudio.addEventListener("ended", () => {
+//pegamos o innerText do ícone que será alterado
+let getText = repeatBtn.innerText;
+//executando ação do ícone
+    switch(getText) {
+        case "repeat":
+        nextMusic();
+        break;
+        case "repeat_one":
+        mainAudio.currentTime = 0;
+        loadMusic(musicIndex);
+        playMusic();
+        break;
+        case "shuffle":
+        let randIndex = Math.floor((Math.random() * allMusic.length) + 1);
+        do{
+            randIndex = Math.floor((Math.random() * allMusic.length) + 1);
+        } while (musicIndex == randIndex);
+            musicIndex = randIndex;
+            loadMusic(musicIndex);
+            playMusic();
+            break;
+    }
+
+});
