@@ -9,7 +9,10 @@ playPauseBtn = wrapper.querySelector('.play-pause'),
 prevBtn = wrapper.querySelector('#prev'),
 nextBtn = wrapper.querySelector('#next'),
 progressArea = wrapper.querySelector('.progress-area'),
-progressBar = wrapper.querySelector('.progress-bar');
+progressBar = wrapper.querySelector('.progress-bar'),
+musicList = wrapper.querySelector('.music-list'),
+showMoreBtn = wrapper.querySelector('#more-music'),
+hideMusicBtn = musicList.querySelector('#close');
 
 let musicIndex = 3;
 
@@ -162,3 +165,45 @@ let getText = repeatBtn.innerText;
     }
 
 });
+
+//abrindo lista de músicas
+showMoreBtn.addEventListener("click", () => {
+    musicList.classList.toggle("show");
+});
+
+//fechando lista de músicas
+hideMusicBtn.addEventListener("click", () => {
+    showMoreBtn.click();
+});
+
+const ulTag = wrapper.querySelector("ul");
+
+//criação do li de acordo com o tamanho array
+for(let i = 0; i < allMusic.length; i++) {
+
+    //passando song, name e artista do array para o li
+    let liTag = `<li>
+                    <div class="row">
+                        <span>${allMusic[i].name}</span>
+                        <p>${allMusic[i].artist}</p>
+                    </div>
+                    <audio class="${allMusic[i].src}" src="songs/${allMusic[i].src}.mp3"></audio>
+                    <span id="${allMusic[i].src}"  class="audio-duration">0:00</span>
+                </li>`;
+    ulTag.insertAdjacentHTML("beforeend", liTag);
+    let liAudioDuration = ulTag.querySelector(`#${allMusic[i].src}`);
+    let liAudioTag = ulTag.querySelector(`.${allMusic[i].src}`);
+
+    liAudioTag.addEventListener("loadeddata", () => {
+
+        //atualizar a duração total da música
+        let audioDuration = liAudioTag.duration;
+        let totalMin = Math.floor(audioDuration / 60);
+        let totalSec = Math.floor(audioDuration % 60);
+        if(totalSec < 10) {
+            totalSec = `0${totalSec}`
+        }
+        liAudioDuration.innerText = `${totalMin}:${totalSec}`;
+    });
+}
+
