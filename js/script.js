@@ -14,17 +14,18 @@ musicList = wrapper.querySelector('.music-list'),
 showMoreBtn = wrapper.querySelector('#more-music'),
 hideMusicBtn = musicList.querySelector('#close');
 
-let musicIndex = 3;
+let musicIndex = Math.floor((Math.random() * allMusic.length) + 1);
 
 window.addEventListener('load', () => {
     loadMusic(musicIndex); //chamando a função 
+    playingNow();
 })
 
 function loadMusic(indexNumber) {
-    musicName.innerText = allMusic[indexNumber].name;
-    musicArtist.innerText = allMusic[indexNumber].artist;
-    musicImg.src = `images/${allMusic[indexNumber].img}.jpg`;
-    mainAudio.src = `songs/${allMusic[indexNumber].img}.mp3`;
+    musicName.innerText = allMusic[indexNumber - 1].name;
+    musicArtist.innerText = allMusic[indexNumber - 1].artist;
+    musicImg.src = `images/${allMusic[indexNumber - 1].src}.jpg`;
+    mainAudio.src = `songs/${allMusic[indexNumber - 1].src}.mp3`;
 }
 
 //play music
@@ -47,6 +48,7 @@ function nextMusic() {
     musicIndex > allMusic.length ? musicIndex = 1 : musicIndex = musicIndex;
     loadMusic(musicIndex);
     playMusic();
+    playingNow();
 }
 
 //prev music
@@ -55,12 +57,14 @@ function prevMusic() {
     musicIndex < 1 ? musicIndex = allMusic.length : musicIndex = musicIndex;
     loadMusic(musicIndex);
     playMusic();
+    playingNow();
 }
 
 //acionando botão de play e pause
 playPauseBtn.addEventListener("click", () => {
-    const isMusicPaused = wrapper.classList.contains("paused");
-    isMusicPaused ? pauseMusic() : playMusic();
+    const isMusicPlay = wrapper.classList.contains("paused");
+    isMusicPlay ? pauseMusic() : playMusic();
+    playingNow();
 });
 
 //acionando botão next
@@ -134,6 +138,7 @@ repeatBtn.addEventListener("click", () => {
         case "shuffle":
         repeatBtn.innerText = "repeat";
         repeatBtn.setAttribute("title", "Playlist looped");
+        playingNow();
         break;
     }
 
@@ -182,7 +187,7 @@ const ulTag = wrapper.querySelector("ul");
 for(let i = 0; i < allMusic.length; i++) {
 
     //passando song, name e artista do array para o li
-    let liTag = `<li>
+    let liTag = `<li li-index="${i + 1}">
                     <div class="row">
                         <span>${allMusic[i].name}</span>
                         <p>${allMusic[i].artist}</p>
@@ -204,6 +209,45 @@ for(let i = 0; i < allMusic.length; i++) {
             totalSec = `0${totalSec}`
         }
         liAudioDuration.innerText = `${totalMin}:${totalSec}`;
+        liAudioDuration.setAttribute("t-duration", `${totalMin}:${totalSec}`);
     });
+}
+
+//estilizando música selecionada
+const allLiTags = ulTag.querySelectorAll("li");
+
+function playingNow() {
+    for (let j = 0; j < allLiTags.length; j++) {
+
+        let audioTag = allLiTags[j].querySelector(".audio-duration");
+
+        //desfazendo estilo
+        if(allLiTags[j].classList.contains("playing")) {
+            allLiTags[j].classList.remove("playing");
+            let adDuration = audioTag.getAttribute("t-duration");
+            audioTag.innerText = adDuration;
+        }
+
+        //aplicando estilo
+        if(allLiTags[j].getAttribute("li-index") == musicIndex) {
+            allLiTags[j].classList.add("playing");
+            audioTag.innerText = "Playing";
+        }
+
+        
+        
+        //adicionando atributo onclick em todas as tags li
+        allLiTags[j].setAttribute("onclick", "clicked(this)");
+        
+    }
+}
+
+//dando play no som selecionado do li
+function clicked(element) {
+    let getLiIndex = element.getAttribute("li-index");
+    musicIndex = getLiIndex;
+    loadMusic(musicIndex);
+    playMusic();
+    playingNow();
 }
 
